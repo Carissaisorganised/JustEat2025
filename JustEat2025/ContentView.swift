@@ -8,36 +8,51 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var searchText: String = ""
-    
+    @State private var animateGradient: Bool = false
     var body: some View {
-        VStack{
-            Image(systemName: "justeat")//put just eat logo
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height:100)
-                .padding(.bottom, 20)
+        VStack(spacing: 20) {
+            Image(systemName:"swift")
+                .font(.system(size: 72, weight: .light))
+                .padding(.top, 80)
+                .padding(.bottom, 64)
             
-            TextField("Search via your postcode", text: $searchText)
-                .padding()
-                .background(Color(.systemCyan))
-                .cornerRadius(10)
-                .padding(.horizontal, 40) //check sizes
+            Text("Gradient Background Test")
+                .font(.title)
+                .bold()
+            
+            Text("It is a visual effect that creates a smooth transition between two or more colors.")
+                .fontWeight(.thin)
             
             Spacer()
             
-        }
-    
-        .frame(maxHeight: .infinity) //Ensures this centered vertically
+            Button {
+                
+            } label: {
+                Image(systemName: "arrowright")
+            } .frame(width: 50, height: 50)
+                .background(Color.white)
+            .cornerRadius(25)
+            .padding(10)
+            .overlay {
+                Circle()
+                    .stroke(style:StrokeStyle(lineWidth: 1))
+                    .foregroundColor(.white)
+            }
             
+            Spacer()
+        }
+        .foregroundColor(.black)
+        .padding(.horizontal)
+        .multilineTextAlignment(.center)
+        .background {
             
         }
+        
     }
-
-struct SearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    
+    struct ContentView_Previews: PreviewProvider {
+        static var previews: some View {
+            ContentView()
+        }
     }
 }
-
-
