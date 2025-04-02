@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "JET-Logo-White-Secondary-Vertical-Stacked-On Orange-RGB.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "JET-Logo-White-Secondary-Vertical-Stacked-On Orange-RGB 1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "JET-Logo-White-Secondary-Vertical-Stacked-On Orange-RGB 2.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

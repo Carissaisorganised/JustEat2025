@@ -48,7 +48,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Image(systemName: "JustEatLogo") // Just Eat logo
+            Image("jetLogoWithWebAddress") // Just Eat logo
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
@@ -56,7 +56,7 @@ struct ContentView: View {
             
             TextField("Search via your postcode", text: $searchText)
                 .padding()
-                .background(Color(.systemCyan))
+                .background(Color(.aubergine))
                 .cornerRadius(10)
                 .padding(.horizontal, 40)
             
@@ -88,10 +88,9 @@ struct ContentView: View {
         }
         .foregroundColor(.black)
         .background {
-            LinearGradient(colors: [.orange, .red], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(colors: [.mozzarella, .jetOrange, .aubergine, ], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .edgesIgnoringSafeArea(.all)
                 .opacity(animateGradient ? 1 : 0.8)
-                .hueRotation(.degrees(animateGradient ? 45 : 0))
                 .onAppear {
                     withAnimation(.easeInOut(duration: 6).repeatForever(autoreverses: true)) {
                         animateGradient.toggle()
