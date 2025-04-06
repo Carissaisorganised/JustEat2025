@@ -21,20 +21,23 @@ struct FoodCategoryScrollView: View {
                     }) {
                         VStack(spacing: 8) {
                             ZStack {
-                                Circle()
-                                    .fill(Color.white)
+                                // Square background for the icon using a RoundedRectangle
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill (Color.turmeric)
                                     .frame(width: 60, height: 60)
                                     .overlay(
-                                        Circle()
+                                        RoundedRectangle(cornerRadius: 8)
                                             .stroke(
-                                                selectedCategory == name ? Color.orange : Color.clear,
-                                                lineWidth: 3
+                                                selectedCategory == name ? Color.aubergine : Color.clear,
+                                                lineWidth: 5
                                             )
                                     )
                                     .shadow(color: .black.opacity(0.1), radius: 4)
+                                
                                 Text(emoji)
                                     .font(.system(size: 28))
                             }
+                            
                             Text(name)
                                 .font(.footnote)
                                 .foregroundColor(.white)

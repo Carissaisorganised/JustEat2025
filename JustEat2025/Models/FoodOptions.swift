@@ -7,13 +7,12 @@
 
 struct FoodOptions {
     static let all: [String: String] = [
-        "🥗": "Healthy",
-        "🍩": "Desserts",
-        "🍜": "Noodles",
-        "🍤": "Seafood",
-        "🌯": "Wraps",
-        "🍗": "Chicken",
-        "🥞": "Breakfast",
-        "🥪": "Deli"
-    ]
+            "🍔": "Burgers",
+            "🍜": "Chinese",
+            "🍛": "Indian",
+            "🍝": "Italian",
+            "🌮": "Mexican",
+            "🍕": "Pizza",
+            "🥙": "Sandwiches",
+            "🍣": "Sushi"    ]
 }

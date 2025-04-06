@@ -7,250 +7,133 @@
 
 import SwiftUI
 
-struct SearchBar: View {
-    @State var search = ""
-    var body: some View {
-        ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [Color("gradientStart"), Color("gradientEnd")]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.25)
-            .edgesIgnoringSafeArea(.all)
-            
-            VStack {
-                HStack {
-                    Text("Browse")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundColor(Color("textPrimary"))
-                        .padding(.leading, 20)
-                        .padding(.top, -40)
-                    Spacer()
-                    Text("Filter")
-                        .font(.system(size: 24, weight: .medium, design: .rounded))
-                        .foregroundColor(Color("accent"))
-                        .padding(.trailing, 20)
-                        .padding(.top, -30)
-                }
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.gray)
-                        .font(.title)
-                    TextField("Search...", text: $search)
-                        .font(.system(size: 18, design: .rounded))
-                }
-                .frame(width: UIScreen.main.bounds.width * 0.85, height: 40, alignment: .leading)
-                .padding(.leading, 20)
-                .background(Color.white)
-                .cornerRadius(10)
-            }
-        }
-    }
-}
-
-struct Meal: View {
-    let meal: TrendingCardModel
-    var body: some View {
-        VStack {
-            Text("Meal View")
-                .font(.title)
-            Text("Meal: \(meal.title)")
-        }
-        .padding()
-    }
-}
-
-struct TrendingWeek: View {
-    let trendingMeal: TrendingCardModel
-    var body: some View {
-        VStack {
-            Image(trendingMeal.image)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-            Text(trendingMeal.title)
-                .font(.headline)
-        }
-        .padding()
-    }
-}
-
-struct OurPicks: View {
-    @Binding var card: TrendingCardModel
-    @Binding var hero: Bool
-    var body: some View {
-        VStack {
-            Image(card.image)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 150)
-            Text(card.title)
-                .font(.title2)
-        }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-        .shadow(radius: 4)
-    }
-}
-
 struct HomeView: View {
-    var viewModel: RestaurantViewModel
-    @State var hero = false
-    @State var data = sampleTrendingCards  // Sample trending card data
-    
+    @AppStorage("userPostcode") private var postcode: String = ""
+    @ObservedObject var viewModel: RestaurantViewModel
+    @State private var hasLoaded = false
+    @State private var selectedCategory: String? = nil
+    @State private var searchQuery: String = ""
+
     var body: some View {
         NavigationView {
-            VStack {
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack {
-                        // Search bar at the top
-                        SearchBar()
-                        
-                        // Trending Section
-                        VStack {
-                            HStack {
-                                Text("Trending This Week")
-                                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                                    .foregroundColor(Color("textPrimary"))
-                                    .padding(.leading, 20)
-                                Spacer()
-                                Text("View All >")
-                                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                                    .foregroundColor(Color("accent"))
-                                    .padding(.trailing, 20)
-                            }
-                            .padding(.top, -50)
-                            
-                            // Horizontal card view for trending items
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 20) {
-                                    ForEach(sampleTrendingCards) { card in
-                                        NavigationLink(
-                                            destination: Meal(meal: card),
-                                            label: {
-                                                TrendingWeek(trendingMeal: card)
-                                                    .background(Color("cardBackground"))
-                                                    .cornerRadius(15)
-                                                    .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                                            }
-                                        )
+            ZStack {
+                // Background Gradient
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.jetOrange, Color.tomato, Color.aubergine
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+
+                VStack(spacing: 16) {
+                    // Header with logo and title
+                    HStack(spacing: 12) {
+                        Image("jetLogoWithWebAddress")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                        Text("Food Mingle Restaurants")
+                            .font(.system(size: 34, weight: .heavy, design: .default))
+                            .foregroundColor(.white)
+                    }
+                    .padding(.top, 24)
+                    .multilineTextAlignment(.center)
+                    
+                    // Search Bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                        TextField("Search restaurants...", text: $searchQuery)
+                            .foregroundColor(.primary)
+                    }
+                    .padding(12)
+                    .background(Color.white.opacity(0.9))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                    
+                    // Display postcode if available and restaurants loaded
+                    if !postcode.isEmpty && !viewModel.restaurants.isEmpty {
+                        HStack(spacing: 6) {
+                            Image(systemName: "mappin.and.ellipse")
+                                .foregroundColor(.white.opacity(0.9))
+                            Text(postcode.uppercased())
+                                .font(.system(size: 12, weight: .medium, design: .default))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 5)
+                                .background(Color.white.opacity(0.2))
+                                .foregroundColor(.white)
+                                .clipShape(Capsule())
+                        }
+                    }
+                    
+                    // Show a message when no postcode is set
+                    if postcode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        Spacer()
+                        Text("Nothing to View")
+                            .font(.system(size: 34, weight: .heavy, design: .default))
+                            .foregroundColor(.white)
+                            .padding(.top, 24)
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                    } else {
+                        // If restaurants haven't loaded yet, show a progress indicator
+                        if viewModel.restaurants.isEmpty {
+                            Spacer()
+                            ProgressView("Loading restaurants...")
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .foregroundColor(.white)
+                            Spacer(minLength: 10)
+                        } else {
+                            // Restaurants loaded: show categories and list of restaurants
+                            ScrollView {
+                                // Food Category Scroll View (using updated version with square icons)
+                                FoodCategoryScrollView(selectedCategory: $selectedCategory) { selectedCuisine in
+                                    Task {
+                                        await viewModel.fetchRestaurants(postcode: postcode, filterByCuisine: selectedCuisine)
+                                    }
+                                }
+                                .padding(.top, 4)
+                                
+                                // Section Header with modern styling
+                                Text("Popular restaurants near you")
+                                    .font(.system(size: 34, weight: .heavy, design: .default))
+                                    .foregroundColor(.white)
+                                    .padding(.top, 24)
+                                    .multilineTextAlignment(.center)
+                                
+                                // List of Restaurant Cards
+                                LazyVStack(spacing: 16) {
+                                    ForEach(viewModel.restaurants) { restaurant in
+                                        NavigationLink(destination: RestaurantView(restaurant: restaurant)) {
+                                            RestaurantCardView(restaurant: restaurant)
+                                                .padding(.horizontal)
+                                        }
                                         .buttonStyle(PlainButtonStyle())
                                     }
                                 }
-                                .padding(.leading, 30)
-                                .padding(.bottom, 10)
+                                .padding(.top)
                             }
                         }
-                        .opacity(hero ? 0 : 1)
-                        
-                        // Categories Section
-                        VStack {
-                            HStack {
-                                Text("Categories")
-                                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                                    .foregroundColor(Color("textPrimary"))
-                                    .padding(.leading, 20)
-                                Spacer()
-                            }
-                            .padding(.top)
-                            
-                            // First row of category cards
-                            HStack(spacing: 10) {
-                                ForEach(1..<5) { i in
-                                    VStack {
-                                        Image("categ-\(i)")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 50, height: 50)
-                                        Text(FoodTypes[i-1])
-                                            .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                            .foregroundColor(Color("textPrimary"))
-                                    }
-                                    .frame(width: 80, height: 100)
-                                    .background(Color("cardBackground"))
-                                    .cornerRadius(15)
-                                }
-                            }
-                            
-                            // Second row of category cards
-                            HStack(spacing: 10) {
-                                ForEach(3..<7) { i in
-                                    VStack {
-                                        Image("categ-\(i)")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 50, height: 50)
-                                        Text(FoodTypes[i-1])
-                                            .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                            .foregroundColor(Color("textPrimary"))
-                                    }
-                                    .frame(width: 80, height: 100)
-                                    .background(Color("cardBackground"))
-                                    .cornerRadius(15)
-                                }
-                            }
-                        }
-                        .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                        .opacity(hero ? 0 : 1)
-                        
-                        // Our Picks Section
-                        VStack {
-                            HStack {
-                                Text("Our Picks")
-                                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                                    .foregroundColor(Color("textPrimary"))
-                                    .padding(.leading, 20)
-                                Spacer()
-                                Text("View All >")
-                                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                                    .foregroundColor(Color("accent"))
-                                    .padding(.trailing, 20)
-                            }
-                            .opacity(hero ? 0 : 1)
-                            
-                            // Swipeable card view for our picks
-                            VStack(spacing: 100) {
-                                ForEach(0..<data.count) { i in
-                                    GeometryReader { g in
-                                        OurPicks(card: $data[i], hero: $hero)
-                                            .offset(y: data[i].expand ? -g.frame(in: .global).minY : 0)
-                                            .opacity(hero ? (data[i].expand ? 1 : 0) : 1)
-                                            .onTapGesture {
-                                                withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8, blendDuration: 0)) {
-                                                    if !data[i].expand {
-                                                        hero.toggle()
-                                                        data[i].expand.toggle()
-                                                    }
-                                                }
-                                            }
-                                    }
-                                    .frame(height: data[i].expand ? UIScreen.main.bounds.height : 250)
-                                    .simultaneousGesture(
-                                        DragGesture(minimumDistance: data[i].expand ? 0 : 800)
-                                            .onChanged({ _ in print("dragging") })
-                                    )
-                                }
-                            }
-                        }
-                        .padding(.top, 50)
-                        .padding(.bottom, 150)
-                        
-                        Spacer()
                     }
-                    .background(Color("backgroundLight"))
+                    
+                    Spacer(minLength: 0)
                 }
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color("gradientStart"), Color("gradientEnd")]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                .edgesIgnoringSafeArea(.top)
+                .padding(.horizontal)
+                .onAppear {
+                    if !hasLoaded && !postcode.isEmpty {
+                        Task {
+                            await viewModel.fetchRestaurants(postcode: postcode)
+                            hasLoaded = true
+                        }
+                    }
+                }
             }
-            .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
+        }
+        .task(id: postcode) {
+            await viewModel.fetchRestaurants(postcode: postcode)
         }
     }
 }

@@ -17,10 +17,6 @@ struct ContentView: View {
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }
-                SettingsView(viewModel: viewModel)
-                    .tabItem {
-                        Label("Settings", systemImage: "gearshape")
-                    }
             }
         } else {
             OnboardingView(viewModel: viewModel)

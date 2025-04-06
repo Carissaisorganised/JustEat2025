@@ -8,29 +8,43 @@
 import XCTest
 @testable import JustEat2025
 
-final class JustEat2025Tests: XCTestCase {
+class FoodMingleTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    // Test decoding of RestaurantResponse from sample JSON
+    func testRestaurantDecoding() throws {
+        let json = """
+        {
+          "restaurants": [
+            {
+              "id": "1",
+              "name": "Test Restaurant",
+              "rating": { "starRating": 4.5, "count": 100 },
+              "cuisines": [{ "name": "Italian" }],
+              "logoUrl": "https://example.com/logo.png",
+              "address": {
+                "city": "Test City",
+                "firstLine": "123 Test Street",
+                "postalCode": "12345",
+                "location": { "coordinates": [-0.1278, 51.5074] }
+              },
+              "isOpenNowForDelivery": true,
+              "deliveryTimeMinutes": 30
+            }
+          ]
         }
+        """.data(using: .utf8)!
+        
+        let decoder = JSONDecoder()
+        let response = try decoder.decode(RestaurantResponse.self, from: json)
+        
+        XCTAssertEqual(response.restaurants.count, 1, "There should be exactly one restaurant in the response.")
+        let restaurant = response.restaurants.first!
+        XCTAssertEqual(restaurant.name, "Test Restaurant")
+        XCTAssertEqual(restaurant.rating?.starRating, 4.5)
+        XCTAssertEqual(restaurant.cuisines?.first?.name, "Italian")
+        XCTAssertEqual(restaurant.address?.firstLine, "123 Test Street")
+        XCTAssertEqual(restaurant.isOpenNowForDelivery, true)
+        XCTAssertEqual(restaurant.deliveryTimeMinutes, 30)
     }
-
+  
 }

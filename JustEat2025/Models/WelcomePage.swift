@@ -16,8 +16,8 @@ struct WelcomePage: Identifiable {
 
 struct WelcomePageData {
     static let pages: [WelcomePage] = [
-        WelcomePage(title: "We're So Happy You're Here", descrip: "Discover amazing restaurants with just a tap.", image: "welcome1"),
-        WelcomePage(title: "Find What You Love", descrip: "A curated selection of restaurants near you.", image: "welcome2"),
-        WelcomePage(title: "Order with Ease", descrip: "Fast, easy, and convenient food delivery.", image: "welcome3")
+        WelcomePage(title: "We're So Happy You're Here", descrip: "Discover amazing restaurants with just a tap.", image: "OnBoardingImage"),
+        WelcomePage(title: "Find What You Love", descrip: "A curated selection of restaurants near you.", image: "OnBoardingImage2"),
+        WelcomePage(title: "Order with Ease", descrip: "Fast, easy, and convenient food delivery.", image: "OnBoardingImage3")
     ]
 }

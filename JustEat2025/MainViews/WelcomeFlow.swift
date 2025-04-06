@@ -36,60 +36,80 @@ struct WelcomeFlow_Previews: PreviewProvider {
 
 struct WelcomePagesView: View {
     var restaurantVM: RestaurantViewModel
+    @State private var animateGradient = false
 
     var body: some View {
-        VStack {
-            TabView {
-                ForEach(WelcomePageData.pages) { page in
-                    GeometryReader { geometry in
-                        VStack {
-                            Image(page.image)
-                                .resizable()
-                                .scaledToFit()
-                            Text(page.title)
-                                .font(.title)
-                                .bold()
-                                .padding(20)
-                            Text(page.descrip)
-                                .multilineTextAlignment(.center)
-                                .padding(10)
-                        }
-                        .opacity(Double(geometry.frame(in: .global).minX) / 200 + 1)
-                    }
+        ZStack {
+            // Gradient Background using custom asset colors with animated opacity
+            LinearGradient(
+                gradient: Gradient(colors: [Color.jetOrange, Color.tomato, Color.aubergine]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            .opacity(animateGradient ? 1 : 0.8)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 6).repeatForever(autoreverses: true)) {
+                    animateGradient.toggle()
                 }
             }
-            .edgesIgnoringSafeArea(.top)
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
             
-            NavigationLink(
-                destination: OnboardingView(viewModel: restaurantVM)
-                    .navigationBarBackButtonHidden(true)
-                    .navigationBarHidden(true),
-                label: {
-                    Text("Get Started")
-                        .font(.headline)
-                        .frame(width: 200, height: 40, alignment: .center)
-                        .foregroundColor(.white)
-                        .background(Color("jetOrange"))
-                        .cornerRadius(10)
+            VStack {
+                TabView {
+                    ForEach(WelcomePageData.pages) { page in
+                        GeometryReader { geometry in
+                            VStack {
+                                Image(page.image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .onAppear {
+                                        print("Loading image: \(page.image)")
+                                    }
+                                Text(page.title)
+                                    .font(.title)
+                                    .bold()
+                                    .padding(20)
+                                Text(page.descrip)
+                                    .multilineTextAlignment(.center)
+                                    .padding(10)
+                            }
+                            .opacity(1)
+                        }
+                    }
                 }
+                .edgesIgnoringSafeArea(.top)
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                
+                NavigationLink(
+                    destination: OnboardingView(viewModel: restaurantVM)
+                        .navigationBarBackButtonHidden(true)
+                        .navigationBarHidden(true),
+                    label: {
+                        Text("Search")
+                            .font(.headline)
+                            .frame(width: 200, height: 40, alignment: .center)
+                            .foregroundColor(.white)
+                            .background(Color.charcoal)
+                            .cornerRadius(10)
+                    }
+                )
+                .padding(.top)
+                
+                Spacer()
+            }
+            .navigationBarItems(trailing:
+                NavigationLink(
+                    destination: OnboardingView(viewModel: restaurantVM)
+                        .navigationBarBackButtonHidden(true)
+                        .navigationBarHidden(true),
+                    label: {
+                        Image(systemName: "arrow.right")
+                            .font(Font.system(.title3))
+                            .foregroundColor(.charcoal)
+                    }
+                )
             )
-            .padding(.top)
-            
-            Spacer()
+            .navigationBarBackButtonHidden(true)
         }
-        .navigationBarItems(trailing:
-            NavigationLink(
-                destination: OnboardingView(viewModel: restaurantVM)
-                    .navigationBarBackButtonHidden(true)
-                    .navigationBarHidden(true),
-                label: {
-                    Image(systemName: "arrow.right")
-                        .font(Font.system(.title3))
-                        .foregroundColor(.orange)
-                }
-            )
-        )
-        .navigationBarBackButtonHidden(true)
     }
 }

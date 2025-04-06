@@ -16,9 +16,9 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            // Gradient Background using custom asset colors
+            // Background Gradient using custom asset colors
             LinearGradient(
-                gradient: Gradient(colors: [Color.jetOrange, Color.mozzarella, Color.tomato]),
+                gradient: Gradient(colors: [Color.jetOrange, Color.tomato, Color.aubergine]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -31,38 +31,35 @@ struct OnboardingView: View {
             }
             
             // Content
-            VStack(spacing: 20) {
+            VStack(spacing: 30) {
                 Image("jetLogoLong") // Just Eat logo
                     .resizable()
                     .scaledToFit()
                     .frame(width: 300, height: 100)
                     .padding(.top, 40)
                 
-                // Welcome text with Charcoal color
-                VStack(spacing: 5) {
+                // Welcome text with modern styling
+                VStack(spacing: 8) {
                     Text("Welcome to Food Mingle")
-                        .font(.largeTitle)
-                        .fontWeight(.heavy)
+                        .font(.system(size: 40, weight: .bold, design: .default))
                         .foregroundColor(Color.charcoal)
-                        .shadow(color: Color.charcoal.opacity(0.3), radius: 2, x: 0, y: 2)
+                        .multilineTextAlignment(.center)
                     
                     Text("by Just Eat Takeaway")
-                        .font(.title3)
-                        .fontWeight(.medium)
-                        .foregroundColor(Color.charcoal)
-                        .opacity(0.85)
+                        .font(.system(size: 22, weight: .medium, design: .default))
+                        .foregroundColor(Color.charcoal.opacity(0.85))
+                        .multilineTextAlignment(.center)
                 }
-                .multilineTextAlignment(.center)
                 .padding(.horizontal)
                 
                 Text("Enter your postcode to find nearby restaurants")
-                    .font(.headline)
+                    .font(.system(size: 20, weight: .regular, design: .default))
                     .foregroundColor(Color.charcoal)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 
                 // HStack combining TextField and Search Button
-                HStack(spacing: 10) {
+                HStack(spacing: 12) {
                     TextField("Postcode", text: $postcode)
                         .padding()
                         .background(Color.mozzarella.opacity(0.9))
@@ -79,14 +76,20 @@ struct OnboardingView: View {
                         Image(systemName: "magnifyingglass")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(Color.jetOrange)
-                            .padding(12)
-                            .background(Color.white)
+                            .frame(width: 28, height: 28)
+                            .foregroundColor(.white)
+                            .padding(14)
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color.jetOrange, Color.aubergine]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
                             .clipShape(Circle())
                             .overlay(
                                 Circle()
-                                    .stroke(Color.jetOrange, lineWidth: 2)
+                                    .stroke(Color.jetOrange, lineWidth: 3)
                             )
                     }
                 }
