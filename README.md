@@ -67,7 +67,7 @@ Select an iOS Simulator or a connected device.
 
 Press Cmd + R to build and run the application.
 
-On launch, enter a postcode (e.g., EC4M7RF) to fetch and display restaurant data.
+On launch, enter a postcode (e.g., M2 3AW) to fetch and display restaurant data.
 
 
 🤔 Assumptions
