@@ -11,7 +11,7 @@ import SwiftUI
 struct JustEat2025App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WelcomeFlow()
         }
     }
 }
